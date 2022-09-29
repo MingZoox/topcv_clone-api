@@ -12,11 +12,11 @@ import {
   Post,
 } from "@nestjs/common";
 import { UserRole } from "../common/constants/role.enum";
-import { CreateUserDto } from "../common/dto/user-dto/create-user.dto";
+import { CreateUserDto } from "../common/dtos/user-dto/create-user.dto";
 import { CurrentUser } from "../common/decorators/current-user.decorator";
 import { User } from "../common/entities/user.entity";
 import { Auth } from "../common/decorators/role-auth.decorator";
-import { UpdateUserDto } from "../common/dto/user-dto/update-user.dto";
+import { UpdateUserDto } from "../common/dtos/user-dto/update-user.dto";
 import { UserService } from "./user.service";
 
 @Controller("users")

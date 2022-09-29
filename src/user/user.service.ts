@@ -6,6 +6,7 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeleteResult, Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
+import { Company } from "src/common/entities/company.entity";
 import { UserRole } from "../common/constants/role.enum";
 import { User } from "../common/entities/user.entity";
 
@@ -13,24 +14,30 @@ import { User } from "../common/entities/user.entity";
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private userRepository: Repository<User>,
   ) {}
 
-  async signup({ email, password, username }): Promise<number> {
-    const user = this.usersRepository.findOneBy({ email });
+  async signup(
+    { email, password, username },
+    createdCompany?: Company,
+  ): Promise<number> {
+    const user = await this.userRepository.findOneBy({ email });
     if (user) throw new BadRequestException("email already exist !");
 
-    const createUser = this.usersRepository.create({
+    const createUser: User = this.userRepository.create({
       email,
       password,
       username,
+      company: createdCompany,
     });
 
-    return (await this.usersRepository.save(createUser)).id;
+    if (createdCompany) createUser.role = UserRole.COMPANY;
+
+    return (await this.userRepository.save(createUser)).id;
   }
 
   async login({ email, password }): Promise<number> {
-    const user = await this.usersRepository.findOneBy({ email });
+    const user = await this.userRepository.findOneBy({ email });
     if (!user) throw new BadRequestException("email not found !");
 
     const isPasswordMatch = await user.comparePassword(password);
@@ -38,15 +45,15 @@ export class UserService {
     return user.id;
   }
 
-  findOne(id: number): Promise<User> {
-    const user = this.usersRepository.findOneBy({ id });
+  async findOne(id: number): Promise<User> {
+    const user: User = await this.userRepository.findOneBy({ id });
     if (!user) throw new BadRequestException("user not found !");
 
     return user;
   }
 
   find(): Promise<User[]> {
-    return this.usersRepository.find();
+    return this.userRepository.find();
   }
 
   async update(
@@ -54,10 +61,10 @@ export class UserService {
     updateUser: Partial<User>,
     currentUser: User,
   ): Promise<number> {
-    const user = await this.usersRepository.findOneBy({ id });
+    const user = await this.userRepository.findOneBy({ id });
     if (!user) throw new BadRequestException("user not found !");
 
-    if (currentUser.role !== UserRole.ADMIN && user.id !== currentUser.id) {
+    if (currentUser.role !== UserRole.ADMIN && id !== currentUser.id) {
       throw new UnauthorizedException("unauthorized !");
     }
 
@@ -66,10 +73,10 @@ export class UserService {
       updateUser.password = await bcrypt.hash(updateUser.password, salt);
     }
     Object.assign(user, updateUser);
-    return (await this.usersRepository.save(user)).id;
+    return (await this.userRepository.save(user)).id;
   }
 
   async remove(id: number): Promise<DeleteResult> {
-    return await this.usersRepository.delete(id);
+    return await this.userRepository.delete(id);
   }
 }

@@ -1,7 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  BeforeInsert,
+  JoinColumn,
+  OneToOne,
+} from "typeorm";
 import * as bcrypt from "bcrypt";
 import { Expose } from "class-transformer";
 import { UserRole } from "../constants/role.enum";
+import { Company } from "./company.entity";
 
 @Entity()
 export class User {
@@ -30,6 +38,10 @@ export class User {
     default: UserRole.USER,
   })
   role: string;
+
+  @OneToOne(() => Company, { eager: true, onDelete: "CASCADE" })
+  @JoinColumn()
+  company: Company;
 
   @BeforeInsert()
   async hashPassword() {
