@@ -31,7 +31,7 @@ export class Job {
     type: "enum",
     enum: JobSalary,
   })
-  salary: string;
+  salary: JobSalary;
 
   @Column()
   recruitQuantity: number;
@@ -40,19 +40,19 @@ export class Job {
     type: "enum",
     enum: JobWorkFormat,
   })
-  workFormat: string;
+  workFormat: JobWorkFormat;
 
   @Column({
     type: "enum",
     enum: JobLevel,
   })
-  level: string;
+  level: JobLevel;
 
   @Column({
     type: "enum",
     enum: JobGender,
   })
-  gender: string;
+  gender: JobGender;
 
   @Column()
   experience: string;

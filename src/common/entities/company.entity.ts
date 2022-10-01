@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { JobLocation } from "../constants/job.enum";
 import { Job } from "./job.entity";
 
 @Entity()
@@ -20,6 +21,12 @@ export class Company {
 
   @Column()
   address: string;
+
+  @Column({
+    type: "enum",
+    enum: JobLocation,
+  })
+  location: JobLocation;
 
   @OneToMany(() => Job, (job: Job) => job.company)
   jobs: Job[];

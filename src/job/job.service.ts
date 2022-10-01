@@ -32,6 +32,47 @@ export class JobService {
     return job;
   }
 
+  async findLatest(): Promise<Job[]> {
+    const jobs: Job[] = await this.jobRepository.find({
+      order: {
+        createdAt: "DESC",
+      },
+      take: 100,
+    });
+
+    return jobs;
+  }
+
+  async findByFilter({
+    page,
+    limit,
+    workFormat,
+    level,
+    salary,
+    location,
+  }): Promise<Job[]> {
+    const jobs: Job[] = await this.jobRepository.find({
+      relations: {
+        company: true,
+      },
+      where: {
+        workFormat: workFormat,
+        level: level,
+        salary: salary,
+        company: {
+          location: location,
+        },
+      },
+      order: {
+        createdAt: "DESC",
+      },
+      take: limit,
+      skip: (page - 1) * limit,
+    });
+
+    return jobs;
+  }
+
   async update(
     id: number,
     updateJob: Partial<UpdateJobDto>,

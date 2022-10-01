@@ -18,9 +18,8 @@ export class CreateJobDto {
   expired: Date;
 
   @IsNotEmpty()
-  @IsString()
   @IsEnum(JobSalary)
-  salary: string;
+  salary: JobSalary;
 
   @IsNotEmpty()
   @IsInt()
@@ -28,19 +27,16 @@ export class CreateJobDto {
   recruitQuantity: number;
 
   @IsNotEmpty()
-  @IsString()
   @IsEnum(JobWorkFormat)
-  workFormat: string;
+  workFormat: JobWorkFormat;
 
   @IsNotEmpty()
-  @IsString()
   @IsEnum(JobLevel)
-  level: string;
+  level: JobLevel;
 
   @IsNotEmpty()
-  @IsString()
   @IsEnum(JobGender)
-  gender: string;
+  gender: JobGender;
 
   @IsNotEmpty()
   @IsString()

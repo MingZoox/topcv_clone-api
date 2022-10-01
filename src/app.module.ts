@@ -2,7 +2,6 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "./common/entities/user.entity";
-import { UserModule } from "./user/user.module";
 import { AuthModule } from "./auth/auth.module";
 import { CompanyModule } from "./company/company.module";
 import { JobModule } from "./job/job.module";
@@ -23,7 +22,6 @@ import { Job } from "./common/entities/job.entity";
       synchronize: true,
     }),
     AuthModule,
-    UserModule,
     CompanyModule,
     JobModule,
   ],

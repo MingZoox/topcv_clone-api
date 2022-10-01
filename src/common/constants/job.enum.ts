@@ -15,6 +15,7 @@ export enum JobLocation {
   HANOI = "hanoi",
   HCM = "hcm",
   DANANG = "danang",
+  ANOTHER = "another",
 }
 
 export enum JobSalary {

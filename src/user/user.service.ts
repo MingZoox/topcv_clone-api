@@ -7,6 +7,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { DeleteResult, Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { Company } from "src/common/entities/company.entity";
+import { UploadFileType } from "src/common/constants/upload-type";
 import { UserRole } from "../common/constants/role.enum";
 import { User } from "../common/entities/user.entity";
 
@@ -61,7 +62,7 @@ export class UserService {
     updateUser: Partial<User>,
     currentUser: User,
   ): Promise<number> {
-    const user = await this.userRepository.findOneBy({ id });
+    const user: User = await this.userRepository.findOneBy({ id });
     if (!user) throw new BadRequestException("user not found !");
 
     if (currentUser.role !== UserRole.ADMIN && id !== currentUser.id) {
@@ -73,6 +74,15 @@ export class UserService {
       updateUser.password = await bcrypt.hash(updateUser.password, salt);
     }
     Object.assign(user, updateUser);
+    return (await this.userRepository.save(user)).id;
+  }
+
+  async upload(id: number, fileType: UploadFileType) {
+    const user: User = await this.userRepository.findOneBy({ id });
+    const upload = {
+      [fileType]: `https://topcv-clone.s3.ap-southeast-1.amazonaws.com/${id}/${fileType}`,
+    };
+    Object.assign(user, upload);
     return (await this.userRepository.save(user)).id;
   }
 
