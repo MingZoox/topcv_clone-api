@@ -8,5 +8,6 @@ import { JobService } from "./job.service";
   imports: [TypeOrmModule.forFeature([Job])],
   controllers: [JobController],
   providers: [JobService],
+  exports: [JobService],
 })
 export class JobModule {}

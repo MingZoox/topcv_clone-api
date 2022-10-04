@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   CreateDateColumn,
+  OneToMany,
 } from "typeorm";
 import {
   JobGender,
@@ -12,6 +13,7 @@ import {
   JobWorkFormat,
 } from "../constants/job.enum";
 import { Company } from "./company.entity";
+import { CV } from "./cv.entity";
 
 @Entity()
 export class Job {
@@ -58,7 +60,11 @@ export class Job {
   experience: string;
 
   @ManyToOne(() => Company, (company: Company) => company.jobs, {
+    eager: true,
     onDelete: "CASCADE",
   })
   company: Company;
+
+  @OneToMany(() => CV, (cv: CV) => cv.job)
+  cvs: CV[];
 }

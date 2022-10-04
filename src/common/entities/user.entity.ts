@@ -5,11 +5,13 @@ import {
   BeforeInsert,
   JoinColumn,
   OneToOne,
+  OneToMany,
 } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { Expose } from "class-transformer";
 import { UserRole } from "../constants/role.enum";
 import { Company } from "./company.entity";
+import { Notification } from "./notification.entity";
 
 @Entity()
 export class User {
@@ -32,9 +34,6 @@ export class User {
   })
   avatar: string;
 
-  @Column()
-  cv: string;
-
   @Column({
     type: "enum",
     enum: UserRole,
@@ -46,10 +45,18 @@ export class User {
   @JoinColumn()
   company: Company;
 
+  @OneToMany(
+    () => Notification,
+    (notification: Notification) => notification.user,
+  )
+  notifications: Notification[];
+
   @BeforeInsert()
   async hashPassword() {
     const salt = await bcrypt.genSalt();
-    this.password = await bcrypt.hash(this.password, salt);
+    if (this.password) {
+      this.password = await bcrypt.hash(this.password, salt);
+    }
   }
 
   async comparePassword(password: string) {

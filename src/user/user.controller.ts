@@ -7,7 +7,6 @@ import {
   Param,
   ParseIntPipe,
   UseInterceptors,
-  SerializeOptions,
   Put,
   Post,
   UploadedFile,
@@ -17,8 +16,6 @@ import {
 } from "@nestjs/common";
 import { S3UploadService } from "src/shared/s3upload.service";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { FileType } from "src/common/decorators/file-type.decorator";
-import { UploadFileType } from "src/common/constants/upload-type";
 import { UserRole } from "../common/constants/role.enum";
 import { CreateUserDto } from "../common/dtos/user-dto/create-user.dto";
 import { CurrentUser } from "../common/decorators/current-user.decorator";
@@ -30,16 +27,7 @@ import { UserService } from "./user.service";
 @Controller("users")
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly s3UploadService: S3UploadService,
-  ) {}
-
-  @Get()
-  @SerializeOptions({ groups: [UserRole.ADMIN] })
-  find() {
-    return this.userService.find();
-  }
+  constructor(private readonly userService: UserService) {}
 
   @Get("me")
   @Auth()
@@ -57,10 +45,10 @@ export class UserController {
     return this.userService.signup(createUser);
   }
 
-  @Post("upload")
+  @Post("upload-avatar")
   @Auth()
   @UseInterceptors(FileInterceptor("file"))
-  async upload(
+  async uploadAvatar(
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -70,11 +58,29 @@ export class UserController {
       }),
     )
     file: Express.Multer.File,
-    @FileType("type") typeFile: UploadFileType,
     @CurrentUser() currentUser: User,
   ) {
-    await this.s3UploadService.upload(file, typeFile, currentUser);
-    return this.userService.upload(currentUser.id, typeFile);
+    return this.userService.uploadAvatar(currentUser, file);
+  }
+
+  @Post("upload-cv/:id")
+  @Auth()
+  @UseInterceptors(FileInterceptor("file"))
+  async uploadCV(
+    @Param("id", ParseIntPipe)
+    id: number,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 2000000 }),
+          new FileTypeValidator({ fileType: "pdf" }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.userService.uploadCV(id, currentUser, file);
   }
 
   @Put(":id")

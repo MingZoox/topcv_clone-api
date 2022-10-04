@@ -9,12 +9,6 @@ import {
   Put,
   Query,
 } from "@nestjs/common";
-import {
-  JobLevel,
-  JobLocation,
-  JobSalary,
-  JobWorkFormat,
-} from "src/common/constants/job.enum";
 import { UserRole } from "src/common/constants/role.enum";
 import { CurrentUser } from "src/common/decorators/current-user.decorator";
 import { Auth } from "src/common/decorators/role-auth.decorator";

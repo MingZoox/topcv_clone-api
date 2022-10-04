@@ -1,17 +1,12 @@
 import { S3 } from "aws-sdk";
 import { Logger, Injectable } from "@nestjs/common";
-import { UploadFileType } from "src/common/constants/upload-type";
 import { User } from "src/common/entities/user.entity";
 
 @Injectable()
 export class S3UploadService {
-  async upload(
-    file: Express.Multer.File,
-    typeFile: UploadFileType,
-    currentUser: User,
-  ) {
+  async upload(file: Express.Multer.File, upload: string, currentUser: User) {
     const bucketS3 = "topcv-clone";
-    const fileName = `${currentUser.id}/${typeFile}`;
+    const fileName = `${currentUser.id}/${upload}`;
     await this.uploadS3(file.buffer, bucketS3, fileName);
   }
 

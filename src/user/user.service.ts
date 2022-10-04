@@ -7,7 +7,10 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { DeleteResult, Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { Company } from "src/common/entities/company.entity";
-import { UploadFileType } from "src/common/constants/upload-type";
+import { JobService } from "src/job/job.service";
+import { CVService } from "src/cv/cv.service";
+import { Job } from "src/common/entities/job.entity";
+import { S3UploadService } from "src/shared/s3upload.service";
 import { UserRole } from "../common/constants/role.enum";
 import { User } from "../common/entities/user.entity";
 
@@ -16,6 +19,9 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private jobService: JobService,
+    private s3UploadService: S3UploadService,
+    private cvService: CVService,
   ) {}
 
   async signup(
@@ -38,11 +44,26 @@ export class UserService {
   }
 
   async login({ email, password }): Promise<number> {
-    const user = await this.userRepository.findOneBy({ email });
+    const user: User = await this.userRepository.findOneBy({ email });
     if (!user) throw new BadRequestException("email not found !");
 
     const isPasswordMatch = await user.comparePassword(password);
     if (!isPasswordMatch) throw new BadRequestException("password invalid !");
+    return user.id;
+  }
+
+  async loginOAuth({ email, username, avatar }): Promise<number> {
+    const user: User = await this.userRepository.findOneBy({ email });
+    if (!user) {
+      const createUser: User = this.userRepository.create({
+        email,
+        avatar,
+        username,
+      });
+
+      return (await this.userRepository.save(createUser)).id;
+    }
+
     return user.id;
   }
 
@@ -51,10 +72,6 @@ export class UserService {
     if (!user) throw new BadRequestException("user not found !");
 
     return user;
-  }
-
-  find(): Promise<User[]> {
-    return this.userRepository.find();
   }
 
   async update(
@@ -77,16 +94,44 @@ export class UserService {
     return (await this.userRepository.save(user)).id;
   }
 
-  async upload(id: number, fileType: UploadFileType) {
-    const user: User = await this.userRepository.findOneBy({ id });
+  async remove(id: number): Promise<DeleteResult> {
+    return await this.userRepository.delete(id);
+  }
+
+  async uploadAvatar(
+    currentUser: User,
+    file: Express.Multer.File,
+  ): Promise<number> {
+    const user: User = await this.userRepository.findOneBy({
+      id: currentUser.id,
+    });
     const upload = {
-      [fileType]: `https://topcv-clone.s3.ap-southeast-1.amazonaws.com/${id}/${fileType}`,
+      avatar: process.env.AWS_UPLOAD_URL + currentUser.id + "/avatar",
     };
     Object.assign(user, upload);
+    await this.s3UploadService.upload(file, "avatar", currentUser);
     return (await this.userRepository.save(user)).id;
   }
 
-  async remove(id: number): Promise<DeleteResult> {
-    return await this.userRepository.delete(id);
+  async uploadCV(
+    id: number,
+    currentUser: User,
+    file: Express.Multer.File,
+  ): Promise<number> {
+    const job: Job = await this.jobService.findOne(id);
+    if (!job) throw new BadRequestException("job not found!");
+
+    const uploadURL = `company/job${id}/`;
+    const awsURL =
+      process.env.AWS_UPLOAD_URL + currentUser.id + "/" + uploadURL;
+    const cvId: number = await this.cvService.create(
+      awsURL,
+      job.company.id,
+      job,
+    );
+
+    await this.s3UploadService.upload(file, uploadURL + cvId, currentUser);
+
+    return cvId;
   }
 }
