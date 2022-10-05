@@ -5,7 +5,6 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeleteResult, Repository } from "typeorm";
-import * as bcrypt from "bcrypt";
 import { Company } from "src/common/entities/company.entity";
 import { S3UploadService } from "src/shared/s3upload.service";
 import { UserRole } from "../common/constants/role.enum";
@@ -28,10 +27,10 @@ export class UserService {
 
     const createUser: User = this.userRepository.create({
       email,
-      password,
       username,
       company: createdCompany,
     });
+    createUser.setPassword(password);
 
     if (createdCompany) createUser.role = UserRole.COMPANY;
 
@@ -81,10 +80,8 @@ export class UserService {
       throw new UnauthorizedException("unauthorized !");
     }
 
-    if (updateUser.password) {
-      const salt = await bcrypt.genSalt();
-      updateUser.password = await bcrypt.hash(updateUser.password, salt);
-    }
+    if (updateUser.password) user.setPassword(updateUser.password);
+
     Object.assign(user, updateUser);
     return (await this.userRepository.save(user)).id;
   }
@@ -105,6 +102,15 @@ export class UserService {
     };
     Object.assign(user, upload);
     await this.s3UploadService.upload(file, "avatar", currentUser);
+    return (await this.userRepository.save(user)).id;
+  }
+
+  async verifyMailForgetPassword(email: string): Promise<number> {
+    const user: User = await this.userRepository.findOneBy({ email });
+    if (!user) throw new BadRequestException("user not found !");
+
+    const newPassword = "00000000";
+    user.setPassword(newPassword);
     return (await this.userRepository.save(user)).id;
   }
 }

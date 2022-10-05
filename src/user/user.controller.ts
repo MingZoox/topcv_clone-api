@@ -14,7 +14,6 @@ import {
   MaxFileSizeValidator,
   ParseFilePipe,
 } from "@nestjs/common";
-import { S3UploadService } from "src/shared/s3upload.service";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { UserRole } from "../common/constants/role.enum";
 import { CreateUserDto } from "../common/dtos/user-dto/create-user.dto";
@@ -35,9 +34,9 @@ export class UserController {
     return currentUser;
   }
 
-  @Get(":id")
-  findOne(@Param("id", ParseIntPipe) id: number) {
-    return this.userService.findOne(id);
+  @Get(":userId")
+  findOne(@Param("userId", ParseIntPipe) userId: number) {
+    return this.userService.findOne(userId);
   }
 
   @Post("signup")
@@ -63,19 +62,19 @@ export class UserController {
     return this.userService.uploadAvatar(currentUser, file);
   }
 
-  @Put(":id")
+  @Put(":userId")
   @Auth()
   update(
     @Body() updateUser: UpdateUserDto,
-    @Param("id", ParseIntPipe) id: number,
+    @Param("userId", ParseIntPipe) userId: number,
     @CurrentUser() currentUser: User,
   ) {
-    return this.userService.update(id, updateUser, currentUser);
+    return this.userService.update(userId, updateUser, currentUser);
   }
 
-  @Delete(":id")
+  @Delete(":userId")
   @Auth(UserRole.ADMIN)
-  remove(@Param("id", ParseIntPipe) id: number) {
-    return this.userService.remove(id);
+  remove(@Param("userId", ParseIntPipe) userId: number) {
+    return this.userService.remove(userId);
   }
 }

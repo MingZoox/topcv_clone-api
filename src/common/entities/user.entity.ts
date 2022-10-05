@@ -53,12 +53,9 @@ export class User {
   )
   notifications: Notification[];
 
-  @BeforeInsert()
-  async hashPassword() {
+  async setPassword(password: string) {
     const salt = await bcrypt.genSalt();
-    if (this.password) {
-      this.password = await bcrypt.hash(this.password, salt);
-    }
+    this.password = await bcrypt.hash(password, salt);
   }
 
   async comparePassword(password: string) {
