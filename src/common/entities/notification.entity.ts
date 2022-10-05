@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  CreateDateColumn,
+} from "typeorm";
 import { User } from "./user.entity";
 
 @Entity()
@@ -8,6 +14,9 @@ export class Notification {
 
   @Column()
   title: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
 
   @Column()
   description: string;

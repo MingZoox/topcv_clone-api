@@ -7,13 +7,16 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
 } from "@nestjs/common";
 import { UserRole } from "src/common/constants/role.enum";
 import { CurrentUser } from "src/common/decorators/current-user.decorator";
 import { Auth } from "src/common/decorators/role-auth.decorator";
 import { CreateCompanyDto } from "src/common/dtos/company-dto/create-company.dto";
 import { UpdateCompanyDto } from "src/common/dtos/company-dto/update-company.dto";
+import { CreateJobDto } from "src/common/dtos/job-dto/create-job.dto";
 import { User } from "src/common/entities/user.entity";
+import { OptionalAuthGuard } from "src/common/guards/optional-auth.guard";
 import { CompanyService } from "./company.service";
 
 @Controller("companies")
@@ -26,9 +29,37 @@ export class CompanyController {
     return this.companyService.create(createCompany);
   }
 
+  @Post("job")
+  @Auth(UserRole.COMPANY)
+  createJob(@Body() createJob: CreateJobDto, @CurrentUser() currentUser: User) {
+    return this.companyService.createJob(createJob, currentUser);
+  }
+
   @Get(":id")
-  findOne(@Param("id", ParseIntPipe) id: number) {
-    return this.companyService.findOne(id);
+  @UseGuards(OptionalAuthGuard)
+  findOne(
+    @Param("id", ParseIntPipe) id: number,
+    @CurrentUser() currentUser: User | null,
+  ) {
+    return this.companyService.findOne(id, currentUser);
+  }
+
+  @Put("follow/:id")
+  @Auth()
+  followCompany(
+    @Param("id", ParseIntPipe) id: number,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.companyService.followCompany(id, currentUser);
+  }
+
+  @Put("unfollow/:id")
+  @Auth()
+  unFollowCompany(
+    @Param("id", ParseIntPipe) id: number,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.companyService.unFollowCompany(id, currentUser);
   }
 
   @Put(":id")

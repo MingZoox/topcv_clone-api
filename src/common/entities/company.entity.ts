@@ -1,6 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  JoinTable,
+  ManyToMany,
+} from "typeorm";
 import { JobLocation } from "../constants/job.enum";
 import { Job } from "./job.entity";
+import { User } from "./user.entity";
 
 @Entity()
 export class Company {
@@ -30,4 +38,8 @@ export class Company {
 
   @OneToMany(() => Job, (job: Job) => job.company)
   jobs: Job[];
+
+  @ManyToMany(() => User)
+  @JoinTable()
+  users: User[];
 }

@@ -2,17 +2,22 @@ import {
   Body,
   Controller,
   Delete,
+  FileTypeValidator,
   Get,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   ParseIntPipe,
   Post,
   Put,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { UserRole } from "src/common/constants/role.enum";
 import { CurrentUser } from "src/common/decorators/current-user.decorator";
 import { Auth } from "src/common/decorators/role-auth.decorator";
-import { CreateJobDto } from "src/common/dtos/job-dto/create-job.dto";
 import { SearchJobDto } from "src/common/dtos/job-dto/search-job.dto";
 import { UpdateJobDto } from "src/common/dtos/job-dto/update-job.dto";
 import { User } from "src/common/entities/user.entity";
@@ -25,12 +30,6 @@ export class JobController {
   @Get()
   findByFilter(@Query() searchJobDto: SearchJobDto) {
     return this.jobService.findByFilter(searchJobDto);
-  }
-
-  @Post()
-  @Auth(UserRole.COMPANY)
-  create(@Body() createJob: CreateJobDto, @CurrentUser() currentUser: User) {
-    return this.jobService.create(createJob, currentUser);
   }
 
   @Get(":id")
@@ -55,5 +54,25 @@ export class JobController {
     @CurrentUser() currentUser: User,
   ) {
     return this.jobService.remove(id, currentUser);
+  }
+
+  @Post("upload-cv/:id")
+  @Auth()
+  @UseInterceptors(FileInterceptor("file"))
+  async uploadCV(
+    @Param("id", ParseIntPipe)
+    id: number,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 2000000 }),
+          new FileTypeValidator({ fileType: "pdf" }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.jobService.uploadCV(id, currentUser, file);
   }
 }

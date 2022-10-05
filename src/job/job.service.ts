@@ -9,6 +9,8 @@ import { CreateJobDto } from "src/common/dtos/job-dto/create-job.dto";
 import { UpdateJobDto } from "src/common/dtos/job-dto/update-job.dto";
 import { Job } from "src/common/entities/job.entity";
 import { User } from "src/common/entities/user.entity";
+import { CVService } from "src/cv/cv.service";
+import { S3UploadService } from "src/shared/s3upload.service";
 import { DeleteResult, Repository } from "typeorm";
 
 @Injectable()
@@ -16,6 +18,8 @@ export class JobService {
   constructor(
     @InjectRepository(Job)
     private jobRepository: Repository<Job>,
+    private s3UploadService: S3UploadService,
+    private cvService: CVService,
   ) {}
 
   async create(createJob: CreateJobDto, currentUser: User): Promise<number> {
@@ -105,5 +109,27 @@ export class JobService {
     }
 
     return await this.jobRepository.delete(id);
+  }
+
+  async uploadCV(
+    id: number,
+    currentUser: User,
+    file: Express.Multer.File,
+  ): Promise<number> {
+    const job: Job = await this.jobRepository.findOneBy({ id });
+    if (!job) throw new BadRequestException("job not found!");
+
+    const uploadURL = `company/job${id}/`;
+    const awsURL =
+      process.env.AWS_UPLOAD_URL + currentUser.id + "/" + uploadURL;
+    const cvId: number = await this.cvService.create(
+      awsURL,
+      job.company.id,
+      job,
+    );
+
+    await this.s3UploadService.upload(file, uploadURL + cvId, currentUser);
+
+    return cvId;
   }
 }

@@ -1,5 +1,13 @@
 import { Type } from "class-transformer";
-import { IsEmail, IsInt, IsOptional, IsString, Length } from "class-validator";
+import {
+  IsEmail,
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsString,
+  Length,
+} from "class-validator";
+import { JobLocation } from "src/common/constants/job.enum";
 
 export class UpdateCompanyDto {
   @IsOptional()
@@ -32,4 +40,8 @@ export class UpdateCompanyDto {
   @IsOptional()
   @IsString()
   address: string;
+
+  @IsOptional()
+  @IsEnum(JobLocation)
+  location: JobLocation;
 }

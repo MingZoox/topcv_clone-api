@@ -1,5 +1,13 @@
 import { Type } from "class-transformer";
-import { IsEmail, IsInt, IsNotEmpty, IsString, Length } from "class-validator";
+import {
+  IsEmail,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  Length,
+} from "class-validator";
+import { JobLocation } from "src/common/constants/job.enum";
 
 export class CreateCompanyDto {
   @IsString()
@@ -32,4 +40,8 @@ export class CreateCompanyDto {
   @IsString()
   @IsNotEmpty()
   address: string;
+
+  @IsNotEmpty()
+  @IsEnum(JobLocation)
+  location: JobLocation;
 }

@@ -63,26 +63,6 @@ export class UserController {
     return this.userService.uploadAvatar(currentUser, file);
   }
 
-  @Post("upload-cv/:id")
-  @Auth()
-  @UseInterceptors(FileInterceptor("file"))
-  async uploadCV(
-    @Param("id", ParseIntPipe)
-    id: number,
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 2000000 }),
-          new FileTypeValidator({ fileType: "pdf" }),
-        ],
-      }),
-    )
-    file: Express.Multer.File,
-    @CurrentUser() currentUser: User,
-  ) {
-    return this.userService.uploadCV(id, currentUser, file);
-  }
-
   @Put(":id")
   @Auth()
   update(

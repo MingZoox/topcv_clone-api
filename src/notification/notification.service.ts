@@ -50,10 +50,13 @@ export class NotificationService {
     return await this.notificationRepository.delete(id);
   }
 
-  async create(paylod: any, currentUser: User): Promise<number> {
+  async create({ title, description, url }, userOwner: User): Promise<number> {
     const createNotification: Notification = this.notificationRepository.create(
       {
-        user: currentUser,
+        title,
+        description,
+        url,
+        user: userOwner,
       },
     );
 

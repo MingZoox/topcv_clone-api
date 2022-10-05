@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  CreateDateColumn,
+} from "typeorm";
 import { Job } from "./job.entity";
 
 @Entity()
@@ -8,6 +14,9 @@ export class CV {
 
   @Column()
   url: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
 
   @Column()
   companyId: number;

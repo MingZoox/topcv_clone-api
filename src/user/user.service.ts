@@ -7,9 +7,6 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { DeleteResult, Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { Company } from "src/common/entities/company.entity";
-import { JobService } from "src/job/job.service";
-import { CVService } from "src/cv/cv.service";
-import { Job } from "src/common/entities/job.entity";
 import { S3UploadService } from "src/shared/s3upload.service";
 import { UserRole } from "../common/constants/role.enum";
 import { User } from "../common/entities/user.entity";
@@ -19,9 +16,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private jobService: JobService,
     private s3UploadService: S3UploadService,
-    private cvService: CVService,
   ) {}
 
   async signup(
@@ -111,27 +106,5 @@ export class UserService {
     Object.assign(user, upload);
     await this.s3UploadService.upload(file, "avatar", currentUser);
     return (await this.userRepository.save(user)).id;
-  }
-
-  async uploadCV(
-    id: number,
-    currentUser: User,
-    file: Express.Multer.File,
-  ): Promise<number> {
-    const job: Job = await this.jobService.findOne(id);
-    if (!job) throw new BadRequestException("job not found!");
-
-    const uploadURL = `company/job${id}/`;
-    const awsURL =
-      process.env.AWS_UPLOAD_URL + currentUser.id + "/" + uploadURL;
-    const cvId: number = await this.cvService.create(
-      awsURL,
-      job.company.id,
-      job,
-    );
-
-    await this.s3UploadService.upload(file, uploadURL + cvId, currentUser);
-
-    return cvId;
   }
 }

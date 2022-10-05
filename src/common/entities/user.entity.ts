@@ -6,6 +6,8 @@ import {
   JoinColumn,
   OneToOne,
   OneToMany,
+  ManyToMany,
+  JoinTable,
 } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { Expose } from "class-transformer";
