@@ -68,6 +68,21 @@ export class UserService {
     return user;
   }
 
+  async findAvatarCompany(companyId: number): Promise<string> {
+    const user: User = await this.userRepository.findOne({
+      relations: {
+        company: true,
+      },
+      where: {
+        company: {
+          id: companyId,
+        },
+      },
+    });
+    if (!user) throw new BadRequestException("user not found !");
+    return user.avatar;
+  }
+
   async update(
     id: number,
     updateUser: Partial<User>,

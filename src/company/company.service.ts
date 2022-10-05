@@ -75,6 +75,7 @@ export class CompanyService {
       }
     }
     delete company.users;
+    company.avatar = await this.userService.findAvatarCompany(company.id);
 
     return company;
   }
