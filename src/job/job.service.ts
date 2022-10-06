@@ -48,6 +48,7 @@ export class JobService {
   }
 
   async findByFilter({
+    search,
     page,
     limit,
     workFormat,
@@ -55,7 +56,7 @@ export class JobService {
     salary,
     location,
   }): Promise<Job[]> {
-    const jobs: Job[] = await this.jobRepository.find({
+    let jobs: Job[] = await this.jobRepository.find({
       relations: {
         company: true,
       },
@@ -70,9 +71,14 @@ export class JobService {
       order: {
         createdAt: "DESC",
       },
-      take: limit,
-      skip: (page - 1) * limit,
     });
+
+    //search and pagination
+    jobs = jobs.filter((job) => {
+      const jobName = job.name.toLowerCase();
+      return jobName.includes(search.toLowerCase());
+    });
+    jobs = jobs.slice((page - 1) * limit, (page - 1) * limit + limit);
 
     return jobs;
   }

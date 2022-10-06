@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsEnum, IsInt, IsOptional } from "class-validator";
+import { IsEnum, IsInt, IsNotEmpty, IsOptional } from "class-validator";
 import {
   JobLevel,
   JobLocation,
@@ -11,6 +11,9 @@ export class SearchJobDto {
   @IsInt()
   @Type(() => Number)
   page = 1;
+
+  @IsNotEmpty()
+  search: string;
 
   @IsInt()
   @Type(() => Number)
