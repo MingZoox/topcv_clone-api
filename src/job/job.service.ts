@@ -74,10 +74,12 @@ export class JobService {
     });
 
     //search and pagination
-    jobs = jobs.filter((job) => {
-      const jobName = job.name.toLowerCase();
-      return jobName.includes(search.toLowerCase());
-    });
+    if (search) {
+      jobs = jobs.filter((job) => {
+        const jobName = job.name.toLowerCase();
+        return jobName.includes(search.toLowerCase());
+      });
+    }
     jobs = jobs.slice((page - 1) * limit, (page - 1) * limit + limit);
 
     return jobs;

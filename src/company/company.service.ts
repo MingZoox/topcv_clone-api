@@ -150,7 +150,6 @@ export class CompanyService {
       },
     });
 
-    console.log(company);
     const notificationBody = {
       title: "New Job!",
       description: `You have a new job from your followed company ${company.name}`,
