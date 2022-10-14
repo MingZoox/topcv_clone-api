@@ -59,6 +59,7 @@ export class CompanyService {
       relations: {
         usersFollowed: true,
         user: true,
+        jobs: true,
       },
       where: {
         id: companyId,
