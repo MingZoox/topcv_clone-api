@@ -5,6 +5,7 @@ import {
   OneToMany,
   JoinTable,
   ManyToMany,
+  OneToOne,
 } from "typeorm";
 import { JobLocation } from "../constants/job.enum";
 import { Job } from "./job.entity";
@@ -41,5 +42,8 @@ export class Company {
 
   @ManyToMany(() => User)
   @JoinTable()
-  users: User[];
+  usersFollowed: User[];
+
+  @OneToOne(() => User, (user) => user.company)
+  user: User;
 }

@@ -2,12 +2,9 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  BeforeInsert,
   JoinColumn,
   OneToOne,
   OneToMany,
-  ManyToMany,
-  JoinTable,
 } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { Expose } from "class-transformer";
@@ -43,7 +40,9 @@ export class User {
   })
   role: string;
 
-  @OneToOne(() => Company, { eager: true, onDelete: "CASCADE" })
+  @OneToOne(() => Company, (company: Company) => company.user, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   company: Company;
 

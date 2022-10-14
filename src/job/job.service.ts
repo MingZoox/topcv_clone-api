@@ -36,17 +36,6 @@ export class JobService {
     return job;
   }
 
-  async findLatest(): Promise<Job[]> {
-    const jobs: Job[] = await this.jobRepository.find({
-      order: {
-        createdAt: "DESC",
-      },
-      take: 100,
-    });
-
-    return jobs;
-  }
-
   async findByFilter({
     search,
     page,
@@ -58,7 +47,16 @@ export class JobService {
   }): Promise<Job[]> {
     let jobs: Job[] = await this.jobRepository.find({
       relations: {
-        company: true,
+        company: {
+          user: true,
+        },
+      },
+      select: {
+        company: {
+          user: {
+            avatar: true,
+          },
+        },
       },
       where: {
         workFormat: workFormat,

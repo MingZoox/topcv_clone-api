@@ -42,7 +42,7 @@ export class CompanyService {
       introduction,
       address,
       location,
-      users: [],
+      usersFollowed: [],
     });
 
     const createdCompany: Company = await this.companyRepository.save(
@@ -57,7 +57,8 @@ export class CompanyService {
   async findOne(companyId: number, currentUser: User | null): Promise<Company> {
     const company: any = await this.companyRepository.findOne({
       relations: {
-        users: true,
+        usersFollowed: true,
+        user: true,
       },
       where: {
         id: companyId,
@@ -68,14 +69,12 @@ export class CompanyService {
     if (currentUser) {
       company.isCurrentUserFollowed = false;
       if (
-        company.users.filter((user: User) => currentUser.id === user.id)
+        company.usersFollowed.filter((user: User) => currentUser.id === user.id)
           .length > 0
       ) {
         company.isCurrentUserFollowed = true;
       }
     }
-    delete company.users;
-    company.avatar = await this.userService.findAvatarCompany(company.id);
 
     return company;
   }
@@ -104,7 +103,7 @@ export class CompanyService {
   async followCompany(companyId: number, currentUser: User) {
     const company: Company = await this.companyRepository.findOne({
       relations: {
-        users: true,
+        usersFollowed: true,
       },
       where: {
         id: companyId,
@@ -112,7 +111,7 @@ export class CompanyService {
     });
     if (!company) throw new BadRequestException("company not found !");
 
-    company.users.push(currentUser);
+    company.usersFollowed.push(currentUser);
 
     return (await this.companyRepository.save(company)).id;
   }
@@ -120,7 +119,7 @@ export class CompanyService {
   async unFollowCompany(companyId: number, currentUser: User) {
     const company: Company = await this.companyRepository.findOne({
       relations: {
-        users: true,
+        usersFollowed: true,
       },
       where: {
         id: companyId,
@@ -128,7 +127,7 @@ export class CompanyService {
     });
     if (!company) throw new BadRequestException("company not found !");
 
-    company.users = company.users.filter(
+    company.usersFollowed = company.usersFollowed.filter(
       (user: User) => user.id !== currentUser.id,
     );
 
@@ -143,7 +142,7 @@ export class CompanyService {
 
     const company: Company = await this.companyRepository.findOne({
       relations: {
-        users: true,
+        usersFollowed: true,
       },
       where: {
         id: currentUser.company.id,
@@ -155,7 +154,7 @@ export class CompanyService {
       description: `You have a new job from your followed company ${company.name}`,
       url: `http://localhost:3000/jobs/${newJobId}`,
     };
-    for (const user of company.users) {
+    for (const user of company.usersFollowed) {
       await this.notificationService.create(notificationBody, user);
     }
 
