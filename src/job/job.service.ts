@@ -30,7 +30,24 @@ export class JobService {
   }
 
   async findOne(id: number): Promise<Job> {
-    const job: Job = await this.jobRepository.findOneBy({ id });
+    const job: any = await this.jobRepository.findOne({
+      relations: {
+        company: {
+          user: true,
+        },
+      },
+      select: {
+        company: {
+          user: {
+            avatar: true,
+          },
+        },
+      },
+      where: {
+        id: id,
+      },
+    });
+
     if (!job) throw new BadRequestException("job not found !");
 
     return job;

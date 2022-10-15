@@ -24,8 +24,6 @@ export class Notification {
   @Column()
   url: string;
 
-  @ManyToOne(() => User, (user: User) => user.notifications, {
-    onDelete: "CASCADE",
-  })
+  @ManyToOne(() => User, (user: User) => user.notifications)
   user: User;
 }

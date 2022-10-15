@@ -61,6 +61,11 @@ export class CompanyService {
         user: true,
         jobs: true,
       },
+      select: {
+        user: {
+          avatar: true,
+        },
+      },
       where: {
         id: companyId,
       },

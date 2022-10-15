@@ -60,7 +60,7 @@ export class Job {
   experience: string;
 
   @ManyToOne(() => Company, (company: Company) => company.jobs, {
-    onDelete: "CASCADE",
+    eager: true,
   })
   company: Company;
 

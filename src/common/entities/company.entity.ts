@@ -37,7 +37,7 @@ export class Company {
   })
   location: JobLocation;
 
-  @OneToMany(() => Job, (job: Job) => job.company)
+  @OneToMany(() => Job, (job: Job) => job.company, { onDelete: "CASCADE" })
   jobs: Job[];
 
   @ManyToMany(() => User)
