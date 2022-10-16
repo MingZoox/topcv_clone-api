@@ -28,9 +28,10 @@ export class UserService {
     const createUser: User = this.userRepository.create({
       email,
       username,
+      password,
       company: createdCompany,
     });
-    createUser.setPassword(password);
+    await createUser.setPassword(password);
 
     if (createdCompany) createUser.role = UserRole.COMPANY;
 
