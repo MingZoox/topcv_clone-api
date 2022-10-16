@@ -61,6 +61,18 @@ export class UserService {
     return user.id;
   }
 
+  async find(page: number, limit: number): Promise<User[]> {
+    if (!page) page = 1;
+    if (!limit) limit = 10;
+
+    const users: User[] = await this.userRepository.find({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    return users;
+  }
+
   async findOne(id: number): Promise<User> {
     const user: User = await this.userRepository.findOneBy({ id });
     if (!user) throw new BadRequestException("user not found !");

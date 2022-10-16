@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   UseGuards,
 } from "@nestjs/common";
 import { UserRole } from "src/common/constants/role.enum";
@@ -42,6 +43,14 @@ export class CompanyController {
     @CurrentUser() currentUser: User | null,
   ) {
     return this.companyService.findOne(id, currentUser);
+  }
+
+  @Get()
+  find(
+    @Query("limit", ParseIntPipe) limit?: number,
+    @Query("page", ParseIntPipe) page?: number,
+  ) {
+    return this.companyService.find(page, limit);
   }
 
   @Put("follow/:id")

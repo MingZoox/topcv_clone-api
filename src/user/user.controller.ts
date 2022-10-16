@@ -13,6 +13,7 @@ import {
   FileTypeValidator,
   MaxFileSizeValidator,
   ParseFilePipe,
+  Query,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { UserRole } from "../common/constants/role.enum";
@@ -37,6 +38,14 @@ export class UserController {
   @Get(":userId")
   findOne(@Param("userId", ParseIntPipe) userId: number) {
     return this.userService.findOne(userId);
+  }
+
+  @Get()
+  find(
+    @Query("limit", ParseIntPipe) limit?: number,
+    @Query("page", ParseIntPipe) page?: number,
+  ) {
+    return this.userService.find(page, limit);
   }
 
   @Post("signup")

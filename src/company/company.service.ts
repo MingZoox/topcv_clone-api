@@ -54,6 +54,18 @@ export class CompanyService {
     return this.userService.signup(createUser, createdCompany);
   }
 
+  async find(page: number, limit: number): Promise<Company[]> {
+    if (!page) page = 1;
+    if (!limit) limit = 10;
+
+    const companies: Company[] = await this.companyRepository.find({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    return companies;
+  }
+
   async findOne(companyId: number, currentUser: User | null): Promise<Company> {
     const company: any = await this.companyRepository.findOne({
       relations: {
