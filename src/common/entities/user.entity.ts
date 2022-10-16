@@ -11,6 +11,7 @@ import { Expose } from "class-transformer";
 import { UserRole } from "../constants/role.enum";
 import { Company } from "./company.entity";
 import { Notification } from "./notification.entity";
+import { Message } from "./message.entity";
 
 @Entity()
 export class User {
@@ -54,6 +55,16 @@ export class User {
     },
   )
   notifications: Notification[];
+
+  @OneToMany(() => Message, (message: Message) => message.from, {
+    onDelete: "CASCADE",
+  })
+  sentMessage: Message[];
+
+  @OneToMany(() => Message, (message: Message) => message.from, {
+    onDelete: "CASCADE",
+  })
+  receivedMessage: Message[];
 
   async setPassword(password: string) {
     const salt = await bcrypt.genSalt();

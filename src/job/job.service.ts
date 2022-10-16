@@ -79,18 +79,19 @@ export class JobService {
         workFormat: workFormat,
         level: level,
         salary: salary,
-        company: {
-          location: location,
-        },
       },
       order: {
         createdAt: "DESC",
       },
     });
 
+    if (location) {
+      jobs = jobs.filter((job: Job) => job.company.location === location);
+    }
+
     //search and pagination
     if (search) {
-      jobs = jobs.filter((job) => {
+      jobs = jobs.filter((job: Job) => {
         const jobName = job.name.toLowerCase();
         return jobName.includes(search.toLowerCase());
       });

@@ -10,12 +10,12 @@ import { Job } from "./common/entities/job.entity";
 import { Notification } from "./common/entities/notification.entity";
 import { NotificationModule } from "./notification/notification.module";
 import { CV } from "./common/entities/cv.entity";
+import { Message } from "./common/entities/message.entity";
+import { MessageModule } from "./message/message.module";
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: "mysql",
       host: process.env.DATABASE_HOST,
@@ -23,7 +23,7 @@ import { CV } from "./common/entities/cv.entity";
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [User, Company, Job, Notification, CV],
+      entities: [User, Company, Job, Notification, CV, Message],
       synchronize: true,
     }),
     MailerModule.forRoot({
@@ -38,6 +38,7 @@ import { CV } from "./common/entities/cv.entity";
     AuthModule,
     CompanyModule,
     NotificationModule,
+    MessageModule,
   ],
 })
 export class AppModule {}
