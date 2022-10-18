@@ -36,7 +36,12 @@ export class NotificationService {
 
   async remove(id: number, currentUser: User): Promise<DeleteResult> {
     const notification: Notification =
-      await this.notificationRepository.findOneBy({ id });
+      await this.notificationRepository.findOne({
+        relations: { user: true },
+        where: {
+          id,
+        },
+      });
     if (!notification)
       throw new BadRequestException("notification not found !");
 

@@ -11,7 +11,7 @@ import { Notification } from "./common/entities/notification.entity";
 import { NotificationModule } from "./notification/notification.module";
 import { CV } from "./common/entities/cv.entity";
 import { Message } from "./common/entities/message.entity";
-import { MessageModule } from "./message/message.module";
+import { EventsModule } from "./events/events.module";
 
 @Module({
   imports: [
@@ -38,7 +38,7 @@ import { MessageModule } from "./message/message.module";
     AuthModule,
     CompanyModule,
     NotificationModule,
-    MessageModule,
+    EventsModule,
   ],
 })
 export class AppModule {}

@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer";
 import {
   Entity,
   Column,
@@ -18,9 +19,11 @@ export class Message {
   @CreateDateColumn()
   createdAt: Date;
 
+  @Exclude()
   @ManyToOne(() => User, (user: User) => user.sentMessage)
   from: User;
 
+  @Exclude()
   @ManyToOne(() => User, (user: User) => user.receivedMessage)
   to: User;
 }

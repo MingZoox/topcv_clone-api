@@ -24,7 +24,7 @@ export class MessageService {
     return (await this.messageRepository.save(createMessage)).id;
   }
 
-  async getInbox(toUserId: number, currentUser: User): Promise<Message[]> {
+  async getInbox(toUserId: number, currentUser: User): Promise<any> {
     const messages: Message[] = await this.messageRepository.find({
       relations: {
         to: true,
@@ -42,6 +42,6 @@ export class MessageService {
         createdAt: "DESC",
       },
     });
-    return messages;
+    return { to: messages[0]?.to, messages };
   }
 }

@@ -9,5 +9,6 @@ import { MessageController } from "./message.controller";
   imports: [TypeOrmModule.forFeature([Message]), UserModule],
   controllers: [MessageController],
   providers: [MessageService],
+  exports: [MessageService],
 })
 export class MessageModule {}
