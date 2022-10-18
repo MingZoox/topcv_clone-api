@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from "typeorm";
 import * as bcrypt from "bcrypt";
-import { Expose } from "class-transformer";
+import { Exclude } from "class-transformer";
 import { UserRole } from "../constants/role.enum";
 import { Company } from "./company.entity";
 import { Notification } from "./notification.entity";
@@ -25,7 +25,7 @@ export class User {
   email: string;
 
   @Column()
-  @Expose({ groups: [UserRole.ADMIN] })
+  @Exclude()
   password: string;
 
   @Column({
@@ -43,6 +43,7 @@ export class User {
 
   @OneToOne(() => Company, (company: Company) => company.user, {
     onDelete: "CASCADE",
+    eager: true,
   })
   @JoinColumn()
   company: Company;

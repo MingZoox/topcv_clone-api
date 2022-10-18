@@ -31,7 +31,7 @@ export class CompanyController {
   }
 
   @Post("jobs")
-  @Auth(UserRole.ADMIN, UserRole.COMPANY)
+  @Auth(UserRole.COMPANY)
   createJob(@Body() createJob: CreateJobDto, @CurrentUser() currentUser: User) {
     return this.companyService.createJob(createJob, currentUser);
   }

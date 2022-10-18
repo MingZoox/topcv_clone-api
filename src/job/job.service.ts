@@ -25,6 +25,7 @@ export class JobService {
   async create(createJob: CreateJobDto, currentUser: User): Promise<number> {
     const createdJob: Job = this.jobRepository.create(createJob);
 
+    console.log(currentUser);
     createdJob.company = currentUser.company;
     return (await this.jobRepository.save(createdJob)).id;
   }
