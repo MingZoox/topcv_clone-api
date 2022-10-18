@@ -25,7 +25,6 @@ export class JobService {
   async create(createJob: CreateJobDto, currentUser: User): Promise<number> {
     const createdJob: Job = this.jobRepository.create(createJob);
 
-    console.log(currentUser);
     createdJob.company = currentUser.company;
     return (await this.jobRepository.save(createdJob)).id;
   }
@@ -37,19 +36,13 @@ export class JobService {
           user: true,
         },
       },
-      select: {
-        company: {
-          user: {
-            avatar: true,
-          },
-        },
-      },
       where: {
         id: id,
       },
     });
 
     if (!job) throw new BadRequestException("job not found !");
+    job.company.user = { avatar: job.company.user.avatar };
 
     return job;
   }

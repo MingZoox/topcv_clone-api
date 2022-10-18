@@ -73,16 +73,13 @@ export class CompanyService {
         user: true,
         jobs: true,
       },
-      select: {
-        user: {
-          avatar: true,
-        },
-      },
       where: {
         id: companyId,
       },
     });
+
     if (!company) throw new BadRequestException("company not found !");
+    company.user = { avatar: company.user.avatar };
 
     if (currentUser) {
       company.isCurrentUserFollowed = false;
