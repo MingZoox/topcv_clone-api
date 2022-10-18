@@ -10,4 +10,8 @@ export class CreateMessageDto {
   @Type(() => Number)
   @IsInt()
   to: number;
+
+  @IsNotEmpty()
+  @IsString()
+  room: string;
 }

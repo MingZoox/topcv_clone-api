@@ -167,7 +167,7 @@ export class CompanyService {
     const notificationBody = {
       title: "New Job!",
       description: `You have a new job from your followed company ${company.name}`,
-      url: `http://localhost:3000/jobs/${newJobId}`,
+      url: `${process.env.CLIENT_URL}/jobs/${newJobId}`,
     };
     for (const user of company.usersFollowed) {
       await this.notificationService.create(notificationBody, user);

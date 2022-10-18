@@ -18,15 +18,6 @@ import { MessageService } from "./message.service";
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
-  @Post()
-  @Auth()
-  create(
-    @Body() createMessageDto: CreateMessageDto,
-    @CurrentUser() currentUser: User,
-  ) {
-    return this.messageService.create(createMessageDto, currentUser);
-  }
-
   @Get(":toUserId")
   @Auth()
   get(@Param("toUserId") toUserId: number, @CurrentUser() currentUser: User) {
