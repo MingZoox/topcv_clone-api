@@ -11,6 +11,7 @@ import { JwtService } from "@nestjs/jwt";
 import { CreateMessageDto } from "src/common/dtos/message-dto/create-message.dto";
 import { MessageService } from "src/message/message.service";
 import { UserService } from "src/user/user.service";
+import { UsePipes, ValidationPipe } from "@nestjs/common";
 
 @WebSocketGateway({
   cors: {
@@ -45,12 +46,15 @@ export class EventsGateway implements OnGatewayConnection {
     socket.join(room);
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage("send_message")
   handleSendMessage(
     @MessageBody() body: CreateMessageDto,
     @ConnectedSocket() socket,
   ) {
-    this.messageService.create(body, socket.currentUser);
-    socket.to(body.room).emit("receive_message", body.content);
+    try {
+      this.messageService.create(body, socket.currentUser);
+      socket.to(body.room).emit("receive_message", body.content);
+    } catch (err) {}
   }
 }

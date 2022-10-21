@@ -1,15 +1,12 @@
 import {
-  Body,
   ClassSerializerInterceptor,
   Controller,
   Get,
   Param,
-  Post,
   UseInterceptors,
 } from "@nestjs/common";
 import { CurrentUser } from "src/common/decorators/current-user.decorator";
 import { Auth } from "src/common/decorators/role-auth.decorator";
-import { CreateMessageDto } from "src/common/dtos/message-dto/create-message.dto";
 import { User } from "src/common/entities/user.entity";
 import { MessageService } from "./message.service";
 
@@ -17,6 +14,12 @@ import { MessageService } from "./message.service";
 @UseInterceptors(ClassSerializerInterceptor)
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
+
+  @Get("users-sent")
+  @Auth()
+  getUsersSent(@CurrentUser() currentUser: User) {
+    return this.messageService.getUsersSent(currentUser);
+  }
 
   @Get(":toUserId")
   @Auth()

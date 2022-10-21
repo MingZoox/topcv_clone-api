@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Message } from "src/common/entities/message.entity";
 import { User } from "src/common/entities/user.entity";
 import { UserService } from "src/user/user.service";
-import { Repository } from "typeorm";
+import { getRepository, Repository } from "typeorm";
 
 @Injectable()
 export class MessageService {
@@ -42,6 +42,20 @@ export class MessageService {
         createdAt: "DESC",
       },
     });
-    return { to: messages[0]?.to, messages };
+    return messages;
+  }
+
+  async getUsersSent(currentUser: User): Promise<User[]> {
+    //get distinct users sent
+    const users: User[] = await this.messageRepository
+      .createQueryBuilder("message")
+      .leftJoinAndSelect("message.to", "to")
+      .where("message.from = :fromId", { fromId: currentUser.id })
+      .orderBy("createdAt", "ASC")
+      .select("to")
+      .distinct(true)
+      .getRawMany();
+
+    return users;
   }
 }
