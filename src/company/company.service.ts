@@ -79,7 +79,7 @@ export class CompanyService {
     });
 
     if (!company) throw new BadRequestException("company not found !");
-    company.user = { avatar: company.user.avatar };
+    company.user = { id: company.user.id, avatar: company.user.avatar };
 
     if (currentUser) {
       company.isCurrentUserFollowed = false;

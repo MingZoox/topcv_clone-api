@@ -38,6 +38,11 @@ export class MessageService {
           id: currentUser.id,
         },
       },
+      select: {
+        from: {
+          id: true,
+        },
+      },
       order: {
         createdAt: "DESC",
       },

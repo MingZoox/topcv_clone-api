@@ -15,7 +15,8 @@ import { UsePipes, ValidationPipe } from "@nestjs/common";
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.CLIENT_URL,
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
   },
 })
 export class EventsGateway implements OnGatewayConnection {

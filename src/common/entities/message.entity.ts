@@ -19,7 +19,6 @@ export class Message {
   @CreateDateColumn()
   createdAt: Date;
 
-  @Exclude()
   @ManyToOne(() => User, (user: User) => user.sentMessage)
   from: User;
 

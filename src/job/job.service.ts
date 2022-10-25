@@ -42,7 +42,10 @@ export class JobService {
     });
 
     if (!job) throw new BadRequestException("job not found !");
-    job.company.user = { avatar: job.company.user.avatar };
+    job.company.user = {
+      id: job.company.user.id,
+      avatar: job.company.user.avatar,
+    };
 
     return job;
   }
