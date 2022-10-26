@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Message } from "src/common/entities/message.entity";
 import { User } from "src/common/entities/user.entity";
 import { UserService } from "src/user/user.service";
-import { getRepository, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class MessageService {
@@ -25,42 +25,50 @@ export class MessageService {
   }
 
   async getInbox(toUserId: number, currentUser: User): Promise<any> {
-    const messages: Message[] = await this.messageRepository.find({
-      relations: {
-        to: true,
-        from: true,
-      },
-      where: {
-        to: {
-          id: toUserId,
+    const messages: Message[] = await this.messageRepository
+      .createQueryBuilder("message")
+      .innerJoinAndSelect("message.to", "to")
+      .innerJoinAndSelect("message.from", "from")
+      .where(
+        "(message.from = :fromId OR message.from = :toId) AND (message.to = :fromId OR message.to = :toId)",
+        {
+          fromId: currentUser.id,
+          toId: toUserId,
         },
-        from: {
-          id: currentUser.id,
-        },
-      },
-      select: {
-        from: {
-          id: true,
-        },
-      },
-      order: {
-        createdAt: "DESC",
-      },
-    });
+      )
+      .orderBy("createdAt", "ASC")
+      .distinct(true)
+      .getMany();
+
     return messages;
   }
 
-  async getUsersSent(currentUser: User): Promise<User[]> {
+  async getUsersSent(currentUser: User): Promise<any> {
     //get distinct users sent
-    const users: User[] = await this.messageRepository
+    const tosFroms = await this.messageRepository
       .createQueryBuilder("message")
-      .leftJoinAndSelect("message.to", "to")
-      .where("message.from = :fromId", { fromId: currentUser.id })
+      .innerJoinAndSelect("message.to", "to")
+      .innerJoinAndSelect("message.from", "from")
+      .where("message.from = :fromId OR message.to = :toId", {
+        fromId: currentUser.id,
+        toId: currentUser.id,
+      })
       .orderBy("createdAt", "ASC")
       .select("to")
+      .addSelect("from")
       .distinct(true)
       .getRawMany();
 
-    return users;
+    for (let i = 0; i < tosFroms.length; i++) {
+      for (let j = 0; j < tosFroms.length; j++) {
+        if (tosFroms[i].to_id === tosFroms[j].from_id) {
+          tosFroms.splice(i, 1);
+          i--;
+          break;
+        }
+      }
+    }
+
+    return tosFroms;
   }
 }
