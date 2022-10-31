@@ -37,7 +37,6 @@ export class MessageService {
         },
       )
       .orderBy("createdAt", "ASC")
-      .distinct(true)
       .getMany();
 
     return messages;
@@ -61,7 +60,10 @@ export class MessageService {
 
     for (let i = 0; i < tosFroms.length; i++) {
       for (let j = 0; j < tosFroms.length; j++) {
-        if (tosFroms[i].to_id === tosFroms[j].from_id) {
+        if (
+          tosFroms[i].to_id === tosFroms[j].from_id &&
+          tosFroms[i].from_id === tosFroms[j].to_id
+        ) {
           tosFroms.splice(i, 1);
           i--;
           break;
