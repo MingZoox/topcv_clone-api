@@ -15,7 +15,7 @@ import { UsePipes, ValidationPipe } from "@nestjs/common";
 
 @WebSocketGateway({
   cors: {
-    origin: "http://topcv-clone.netlify.com",
+    origin: "https://topcv-clone.netlify.app",
     methods: ["GET", "POST"],
   },
 })
