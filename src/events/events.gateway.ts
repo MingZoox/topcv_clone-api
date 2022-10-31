@@ -15,7 +15,7 @@ import { UsePipes, ValidationPipe } from "@nestjs/common";
 
 @WebSocketGateway({
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://topcv-clone.herokuapp.com",
     methods: ["GET", "POST"],
   },
 })
