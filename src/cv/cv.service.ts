@@ -27,6 +27,8 @@ export class CVService {
       .createQueryBuilder("cv")
       .innerJoinAndSelect("cv.job", "job")
       .select(["cv.id", "url", "cv.createdAt", "job.name"])
+      .skip((page - 1) * limit)
+      .take(limit)
       .getRawMany();
     return cvs;
   }
