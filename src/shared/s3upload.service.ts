@@ -30,4 +30,16 @@ export class S3UploadService {
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     });
   }
+
+  removeS3(fileName: string) {
+    const s3 = this.getS3();
+    const params = {
+      Bucket: "topcv-clone",
+      Key: fileName,
+    };
+
+    s3.deleteObject(params, (err) => {
+      if (err) throw new Error(err.message);
+    });
+  }
 }
