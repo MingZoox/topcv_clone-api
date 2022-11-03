@@ -23,11 +23,11 @@ export class CVService {
     if (!page) page = 1;
     if (!limit) limit = 10;
 
-    const cvs: CV[] = await this.cvRepository.find({
-      skip: (page - 1) * limit,
-      take: limit,
-    });
-
+    const cvs: CV[] = await this.cvRepository
+      .createQueryBuilder("cv")
+      .innerJoinAndSelect("cv.job", "job")
+      .select(["cv.id", "url", "cv.createdAt", "job.name"])
+      .getRawMany();
     return cvs;
   }
 

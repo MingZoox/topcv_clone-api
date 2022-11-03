@@ -5,7 +5,6 @@ import {
   ManyToOne,
   CreateDateColumn,
   OneToMany,
-  Index,
 } from "typeorm";
 import {
   JobGender,
@@ -21,7 +20,6 @@ export class Job {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Index({ fulltext: true })
   @Column()
   name: string;
 
