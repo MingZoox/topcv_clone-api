@@ -1,73 +1,70 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# TopCV Clone API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## [My Live Website](https://topcv-clone.netlify.app)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+![Design preview](preview.png)
 
-## Description
+# Welcome! 👋
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+To run project run `npm install` then `npm run start:dev`
+Require .env file with following format:
 
-## Installation
+PORT=
 
-```bash
-$ npm install
-```
+SERVER_URL=
 
-## Running the app
+CLIENT_URL=
 
-```bash
-# development
-$ npm run start
+DATABASE_HOST=
 
-# watch mode
-$ npm run start:dev
+DATABASE_PORT=
 
-# production mode
-$ npm run start:prod
-```
+DATABASE_USERNAME=
 
-## Test
+DATABASE_PASSWORD=
 
-```bash
-# unit tests
-$ npm run test
+DATABASE_NAME=
 
-# e2e tests
-$ npm run test:e2e
+JWT_SECRET_KEY=
 
-# test coverage
-$ npm run test:cov
-```
+JWT_EXPIRATION_TIME=
 
-## Support
+AWS_ACCESS_KEY_ID=
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+AWS_SECRET_ACCESS_KEY=
 
-## Stay in touch
+AWS_UPLOAD_URL=
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+SMTP_MAIL=
 
-## License
+SMTP_PASS=
 
-Nest is [MIT licensed](LICENSE).
+## Overview ✨
+
+### The Recruit Website
+
+Your users can be able to:
+
+- Signup Signin with web account or Google account (Forgot password with mail sending)
+- Change information for user ( username, password, `upload avatar`, ... )
+- Candidate can upload CV to employer (AWS S3 storage)
+- Candidate can follow company to get the newest jobs (notification) 
+- Management jobs and cv for users with `company` role
+- Admin page to manage for users with `admin` role
+- **Bonus**: Live chat realtime between company and candidate (Socket)
+
+*Alert:* No responsive (Best perform 1920x1080), Language supported only Vietnamese.
+
+## Technologies
+
+- Client: React [Client source](https://github.com/LPter/topcv-ui)
+- Server: NestJS, Typescript, MySQL, Socket, AWS S3
+- Details in package.json file
+
+## Got feedback ?
+
+It's just my simple and messy project I build in my free time to practice what i have learned.
+So i would very appreciate if you have any feedback.
+Please contact email nguyenvanminhvu@gmail.com
+
+**Feel free to fork !**  🚀
