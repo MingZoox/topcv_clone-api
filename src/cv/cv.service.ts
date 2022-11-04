@@ -26,6 +26,25 @@ export class CVService {
     const cvs: CV[] = await this.cvRepository
       .createQueryBuilder("cv")
       .innerJoinAndSelect("cv.job", "job")
+      .select(["cv.id", "url", "cv.createdAt", "job.company", "job.name"])
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getRawMany();
+    return cvs;
+  }
+
+  async findByCompany(
+    page: number,
+    limit: number,
+    currentUser: User,
+  ): Promise<any> {
+    if (!page) page = 1;
+    if (!limit) limit = 10;
+
+    const cvs: CV[] = await this.cvRepository
+      .createQueryBuilder("cv")
+      .innerJoinAndSelect("cv.job", "job")
+      .where("cv.companyId = :companyId", { companyId: currentUser.company.id })
       .select(["cv.id", "url", "cv.createdAt", "job.name"])
       .skip((page - 1) * limit)
       .take(limit)

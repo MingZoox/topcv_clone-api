@@ -25,6 +25,16 @@ export class CvController {
     return this.cvService.find(page, limit);
   }
 
+  @Get("my-company")
+  @Auth(UserRole.COMPANY)
+  findByCompany(
+    @CurrentUser() currentUser: User,
+    @Query("limit", ParseIntPipe) limit?: number,
+    @Query("page", ParseIntPipe) page?: number,
+  ) {
+    return this.cvService.findByCompany(page, limit, currentUser);
+  }
+
   @Delete(":id")
   @Auth(UserRole.COMPANY, UserRole.ADMIN)
   remove(

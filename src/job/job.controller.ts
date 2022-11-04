@@ -32,6 +32,16 @@ export class JobController {
     return this.jobService.findByFilter(searchJobDto);
   }
 
+  @Get("my-company")
+  @Auth(UserRole.COMPANY)
+  findByCompany(
+    @CurrentUser() currentUser: User,
+    @Query("limit", ParseIntPipe) limit?: number,
+    @Query("page", ParseIntPipe) page?: number,
+  ) {
+    return this.jobService.findByCompany(page, limit, currentUser);
+  }
+
   @Get(":id")
   findOne(@Param("id", ParseIntPipe) id: number) {
     return this.jobService.findOne(id);

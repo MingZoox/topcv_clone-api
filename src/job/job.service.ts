@@ -50,6 +50,15 @@ export class JobService {
     return job;
   }
 
+  async findByCompany(page: number, limit: number, currentUser: User) {
+    return await this.jobRepository
+      .createQueryBuilder("job")
+      .where("companyId = :companyId", { companyId: currentUser.company.id })
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getMany();
+  }
+
   async findByFilter({
     search,
     page,
