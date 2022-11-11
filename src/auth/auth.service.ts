@@ -47,7 +47,7 @@ export class AuthService {
     return response;
   }
 
-  async verifyMailForgetPassword(token: string): Promise<number> {
+  async verifyMailForgetPassword(token: string): Promise<string> {
     const { email } = this.jwtService.verify(token);
     if (!email) throw new BadRequestException("token invalid!");
 
