@@ -69,7 +69,8 @@ export class User {
 
   async setPassword(password: string) {
     const salt = await bcrypt.genSalt();
-    this.password = await bcrypt.hash(password, salt);
+    const newPassword = await bcrypt.hash(password, salt);
+    this.password = newPassword;
   }
 
   async comparePassword(password: string) {

@@ -8,6 +8,7 @@ import { DeleteResult, Repository } from "typeorm";
 import { Company } from "src/common/entities/company.entity";
 import { S3UploadService } from "src/shared/s3upload.service";
 import { UserRole } from "../common/constants/role.enum";
+import { UpdateUserDto } from "../common/dtos/user-dto/update-user.dto";
 import { User } from "../common/entities/user.entity";
 
 @Injectable()
@@ -98,7 +99,7 @@ export class UserService {
 
   async update(
     id: number,
-    updateUser: Partial<User>,
+    updateUser: UpdateUserDto,
     currentUser: User,
   ): Promise<number> {
     const user: User = await this.userRepository.findOneBy({ id });
@@ -133,12 +134,13 @@ export class UserService {
     return (await this.userRepository.save(user)).id;
   }
 
-  async verifyMailForgetPassword(email: string): Promise<number> {
+  async verifyMailForgetPassword(email: string): Promise<string> {
     const user: User = await this.userRepository.findOneBy({ email });
     if (!user) throw new BadRequestException("user not found !");
 
     const newPassword = "00000000";
     user.setPassword(newPassword);
-    return (await this.userRepository.save(user)).id;
+    await this.userRepository.save(user);
+    return "Changed password to 00000000 successfully !";
   }
 }
