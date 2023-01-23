@@ -61,6 +61,9 @@ Your users can be able to:
 - Server: NestJS, Typescript, MySQL, Socket, AWS S3
 - Details in package.json file
 
+## Database Design
+<img width="604" alt="Screenshot 2023-01-23 at 15 26 06" src="https://user-images.githubusercontent.com/75425978/213994667-8a96454b-6f0a-406e-ae91-373291dfed75.png">
+
 ## Got feedback ?
 
 It's just my simple and messy project I build in my free time to practice what i have learned.
